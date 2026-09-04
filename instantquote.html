@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InstantQuote — Instant Online Quotes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0D1B2A;
+    --navy-light: #162236;
+    --cobalt: #1B5FDB;
+    --cobalt-hover: #1550C8;
+    --cobalt-light: #EBF0FD;
+    --amber: #F59E0B;
+    --amber-light: #FEF3C7;
+    --steel: #F0F4FA;
+    --steel-mid: #DDE6F0;
+    --text: #1A2535;
+    --text-mid: #4A5568;
+    --text-light: #718096;
+    --white: #FFFFFF;
+    --success: #10B981;
+    --success-light: #D1FAE5;
+    --border: #D1DCE8;
+    --shadow-sm: 0 1px 3px rgba(13,27,42,0.08);
+    --shadow-md: 0 4px 16px rgba(13,27,42,0.12);
+    --shadow-lg: 0 12px 40px rgba(13,27,42,0.16);
+    --r: 10px;
+    --r-lg: 16px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--text);
+    background: var(--white);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    background: rgba(13,27,42,0.96);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; height: 64px;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none; color: var(--white);
+  }
+  .logo-mark {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--cobalt);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; color: #fff; flex-shrink: 0;
+  }
+  .logo-text { font-weight: 700; font-size: 17px; letter-spacing: -0.3px; }
+  .logo-text span { color: var(--cobalt); }
+
+  .nav-links {
+    display: flex; align-items: center; gap: 4px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: rgba(255,255,255,0.7); text-decoration: none;
+    font-size: 14px; font-weight: 500; padding: 8px 14px;
+    border-radius: 6px; transition: all 0.15s;
+  }
+  .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.08); }
+
+  .nav-cta {
+    background: var(--cobalt); color: #fff !important;
+    padding: 9px 18px !important; border-radius: 8px !important;
+    font-weight: 600 !important; font-size: 14px !important;
+  }
+  .nav-cta:hover { background: var(--cobalt-hover) !important; }
+
+  .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: #fff; margin: 5px 0; border-radius: 2px; transition: 0.2s; }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--navy);
+    padding: 120px 24px 80px;
+    min-height: 100vh;
+    display: flex; align-items: center;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: 0; right: 0;
+    width: 55%; height: 100%;
+    background: linear-gradient(135deg, rgba(27,95,219,0.15) 0%, rgba(27,95,219,0.03) 100%);
+    clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 100%);
+  }
+  .hero-grid {
+    max-width: 1200px; margin: 0 auto; width: 100%;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+    position: relative;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3);
+    color: var(--amber); font-size: 12px; font-weight: 600;
+    padding: 6px 14px; border-radius: 20px; margin-bottom: 24px;
+    letter-spacing: 0.02em;
+  }
+  .hero-badge::before { content: '●'; font-size: 8px; }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(38px, 5vw, 58px);
+    line-height: 1.12; color: var(--white);
+    margin-bottom: 20px; letter-spacing: -0.5px;
+  }
+  .hero h1 em { color: var(--cobalt); font-style: normal; }
+  .hero p {
+    font-size: 17px; color: rgba(255,255,255,0.62);
+    margin-bottom: 36px; max-width: 42ch; line-height: 1.7;
+  }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--cobalt); color: #fff;
+    padding: 14px 28px; border-radius: var(--r);
+    font-size: 15px; font-weight: 600; border: none; cursor: pointer;
+    transition: all 0.15s; text-decoration: none; display: inline-flex;
+    align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { background: var(--cobalt-hover); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(27,95,219,0.4); }
+  .btn-outline {
+    background: transparent; color: rgba(255,255,255,0.8);
+    padding: 14px 28px; border-radius: var(--r);
+    font-size: 15px; font-weight: 500; border: 1px solid rgba(255,255,255,0.2);
+    cursor: pointer; transition: all 0.15s; text-decoration: none; display: inline-flex; align-items: center;
+  }
+  .btn-outline:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.4); }
+  .hero-stats {
+    display: flex; gap: 32px; margin-top: 48px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 32px;
+  }
+  .stat-item { }
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px; color: var(--white); display: block; line-height: 1;
+  }
+  .stat-label { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 4px; display: block; }
+
+  /* ── MINI CALCULATOR PREVIEW ── */
+  .hero-calculator {
+    background: var(--white); border-radius: var(--r-lg);
+    box-shadow: var(--shadow-lg); overflow: hidden;
+  }
+  .calc-header {
+    background: var(--steel); padding: 16px 20px;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .calc-dots { display: flex; gap: 6px; }
+  .calc-dots span { width: 10px; height: 10px; border-radius: 50%; }
+  .calc-dots span:nth-child(1) { background: #FF5F57; }
+  .calc-dots span:nth-child(2) { background: #FEBC2E; }
+  .calc-dots span:nth-child(3) { background: #28C840; }
+  .calc-title { font-size: 13px; font-weight: 600; color: var(--text-mid); margin-left: auto; margin-right: auto; }
+  .calc-body { padding: 24px; }
+  .calc-step-label { font-size: 11px; font-weight: 600; color: var(--cobalt); letter-spacing: 0.06em; margin-bottom: 12px; text-transform: uppercase; }
+  .calc-services { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .calc-service-card {
+    border: 2px solid var(--border); border-radius: 8px;
+    padding: 12px; cursor: pointer; transition: all 0.15s;
+    position: relative;
+  }
+  .calc-service-card.selected { border-color: var(--cobalt); background: var(--cobalt-light); }
+  .calc-service-card .s-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .calc-service-card .s-price { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+  .calc-service-card .s-check {
+    position: absolute; top: 8px; right: 8px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--cobalt); color: #fff;
+    font-size: 9px; display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: 0.15s;
+  }
+  .calc-service-card.selected .s-check { opacity: 1; }
+
+  .price-display {
+    background: var(--navy); border-radius: var(--r);
+    padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .price-label { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .price-amount {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px; color: var(--white); line-height: 1;
+  }
+  .price-amount span { font-size: 18px; vertical-align: super; margin-right: 2px; font-family: 'Inter', sans-serif; font-weight: 300; }
+
+  /* ── HOW IT WORKS ── */
+  .section { padding: 88px 24px; }
+  .section-inner { max-width: 1200px; margin: 0 auto; }
+  .section-label {
+    font-size: 12px; font-weight: 600; color: var(--cobalt);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .section-heading {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1.2; color: var(--text);
+    margin-bottom: 16px; letter-spacing: -0.3px;
+  }
+  .section-sub {
+    font-size: 17px; color: var(--text-mid);
+    max-width: 52ch; line-height: 1.7;
+  }
+
+  .how-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 32px; margin-top: 56px;
+  }
+  .how-card {
+    padding: 32px 28px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    position: relative; overflow: hidden;
+  }
+  .how-card::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 3px; background: var(--cobalt); transform: scaleX(0);
+    transform-origin: left; transition: transform 0.25s;
+  }
+  .how-card:hover::after { transform: scaleX(1); }
+  .how-number {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--cobalt-light); color: var(--cobalt);
+    font-weight: 700; font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+  }
+  .how-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+  .how-desc { font-size: 14px; color: var(--text-mid); line-height: 1.7; }
+
+  /* ── SERVICES ── */
+  .services-section { background: var(--steel); }
+  .services-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px; margin-top: 48px;
+  }
+  .service-card {
+    background: var(--white); border-radius: var(--r-lg);
+    padding: 28px; box-shadow: var(--shadow-sm);
+    border: 1px solid transparent; transition: all 0.2s;
+    display: flex; flex-direction: column;
+  }
+  .service-card:hover {
+    border-color: var(--cobalt); transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+  .service-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: var(--cobalt-light); display: flex; align-items: center;
+    justify-content: center; font-size: 22px; margin-bottom: 16px;
+  }
+  .service-name { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .service-desc { font-size: 14px; color: var(--text-mid); line-height: 1.65; margin-bottom: 20px; flex: 1; }
+  .service-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 16px; border-top: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .service-price { font-size: 20px; font-weight: 700; color: var(--cobalt); }
+  .service-price small { font-size: 12px; color: var(--text-light); font-weight: 400; }
+  .service-duration { font-size: 12px; color: var(--text-light); display: flex; align-items: center; gap: 4px; }
+  .service-features { list-style: none; margin-bottom: 24px; }
+  .service-features li {
+    font-size: 13px; color: var(--text-mid);
+    padding: 4px 0; display: flex; align-items: center; gap: 8px;
+  }
+  .service-features li::before {
+    content: '✓'; color: var(--success); font-weight: 700; font-size: 12px;
+    flex-shrink: 0;
+  }
+  .btn-service {
+    width: 100%; padding: 12px; border-radius: var(--r);
+    border: 1.5px solid var(--cobalt); background: transparent;
+    color: var(--cobalt); font-weight: 600; font-size: 14px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-service:hover { background: var(--cobalt); color: #fff; }
+
+  /* ── QUOTE CALCULATOR ── */
+  .calculator-section { background: var(--white); }
+  .calc-container {
+    display: grid; grid-template-columns: 1fr 380px;
+    gap: 48px; margin-top: 56px; align-items: start;
+  }
+
+  /* Steps */
+  .calc-steps-nav {
+    display: flex; gap: 0; margin-bottom: 32px;
+    border: 1px solid var(--border); border-radius: var(--r); overflow: hidden;
+  }
+  .calc-step-btn {
+    flex: 1; padding: 12px; background: none; border: none;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    color: var(--text-light); position: relative;
+    border-right: 1px solid var(--border); transition: all 0.15s;
+  }
+  .calc-step-btn:last-child { border-right: none; }
+  .calc-step-btn.active { background: var(--cobalt); color: #fff; }
+  .calc-step-btn.done { background: var(--success-light); color: var(--success); }
+
+  .calc-panel { display: none; }
+  .calc-panel.active { display: block; }
+  .panel-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .panel-desc { font-size: 14px; color: var(--text-mid); margin-bottom: 28px; }
+
+  .option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .option-card {
+    border: 2px solid var(--border); border-radius: var(--r);
+    padding: 18px; cursor: pointer; transition: all 0.15s; position: relative;
+  }
+  .option-card:hover { border-color: var(--cobalt); background: var(--cobalt-light); }
+  .option-card.selected { border-color: var(--cobalt); background: var(--cobalt-light); }
+  .option-card .oc-label { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .option-card .oc-desc { font-size: 12px; color: var(--text-light); line-height: 1.5; }
+  .option-card .oc-price { font-size: 13px; font-weight: 700; color: var(--cobalt); margin-top: 10px; }
+  .option-badge {
+    position: absolute; top: 10px; right: 10px;
+    background: var(--cobalt); color: #fff;
+    font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px;
+  }
+
+  .extras-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .extra-card {
+    border: 2px solid var(--border); border-radius: var(--r);
+    padding: 14px; cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .extra-card:hover { border-color: var(--cobalt); }
+  .extra-card.selected { border-color: var(--cobalt); background: var(--cobalt-light); }
+  .extra-check {
+    width: 20px; height: 20px; border-radius: 4px; border: 2px solid var(--border);
+    flex-shrink: 0; margin-top: 1px; transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .extra-card.selected .extra-check { background: var(--cobalt); border-color: var(--cobalt); color: #fff; }
+  .extra-body .eb-label { font-size: 13px; font-weight: 600; color: var(--text); }
+  .extra-body .eb-price { font-size: 12px; color: var(--cobalt); font-weight: 700; margin-top: 2px; }
+
+  .form-group { margin-bottom: 20px; }
+  .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; padding: 11px 14px; border: 1.5px solid var(--border);
+    border-radius: var(--r); font-size: 14px; font-family: inherit; color: var(--text);
+    background: var(--white); transition: border-color 0.15s; outline: none;
+  }
+  .form-input:focus { border-color: var(--cobalt); box-shadow: 0 0 0 3px rgba(27,95,219,0.1); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-textarea { resize: vertical; min-height: 90px; }
+
+  .nav-buttons { display: flex; gap: 12px; margin-top: 32px; }
+  .btn-back {
+    padding: 13px 24px; border-radius: var(--r); font-size: 14px;
+    font-weight: 600; cursor: pointer; border: 1.5px solid var(--border);
+    background: var(--white); color: var(--text); transition: all 0.15s;
+  }
+  .btn-back:hover { border-color: var(--text); }
+  .btn-next {
+    flex: 1; padding: 13px 24px; border-radius: var(--r); font-size: 14px;
+    font-weight: 600; cursor: pointer; border: none;
+    background: var(--cobalt); color: #fff; transition: all 0.15s;
+  }
+  .btn-next:hover { background: var(--cobalt-hover); }
+  .btn-submit {
+    flex: 1; padding: 14px 24px; border-radius: var(--r); font-size: 15px;
+    font-weight: 700; cursor: pointer; border: none;
+    background: var(--cobalt); color: #fff; transition: all 0.15s;
+  }
+  .btn-submit:hover { background: var(--cobalt-hover); box-shadow: 0 6px 20px rgba(27,95,219,0.35); }
+
+  /* ── QUOTE SIDEBAR ── */
+  .quote-sidebar { position: sticky; top: 88px; }
+  .quote-card {
+    background: var(--navy); border-radius: var(--r-lg);
+    overflow: hidden; box-shadow: var(--shadow-lg);
+  }
+  .qc-head {
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .qc-head-label { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.4); letter-spacing: 0.08em; text-transform: uppercase; }
+  .qc-total {
+    font-family: 'DM Serif Display', serif;
+    font-size: 42px; color: var(--white); line-height: 1; margin-top: 4px;
+  }
+  .qc-total span { font-size: 22px; font-family: 'Inter', sans-serif; font-weight: 300; vertical-align: super; }
+  .qc-body { padding: 20px 24px; }
+  .qc-line {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-size: 13px;
+  }
+  .qc-line:last-child { border-bottom: none; }
+  .qc-line-label { color: rgba(255,255,255,0.55); }
+  .qc-line-value { color: var(--white); font-weight: 600; }
+  .qc-line-value.positive { color: var(--amber); }
+  .qc-duration {
+    margin-top: 16px; padding: 12px 14px;
+    background: rgba(255,255,255,0.06); border-radius: 8px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: rgba(255,255,255,0.5);
+  }
+  .qc-trust {
+    padding: 16px 24px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .trust-item {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px; color: rgba(255,255,255,0.4);
+    margin-bottom: 8px;
+  }
+  .trust-item:last-child { margin-bottom: 0; }
+
+  /* ── SUCCESS ── */
+  .success-screen {
+    display: none; text-align: center; padding: 48px 32px;
+    background: var(--white); border-radius: var(--r-lg);
+    border: 2px solid var(--success);
+  }
+  .success-icon {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: var(--success-light); color: var(--success);
+    font-size: 32px; display: flex; align-items: center;
+    justify-content: center; margin: 0 auto 20px;
+  }
+  .success-title { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--text); margin-bottom: 10px; }
+  .success-desc { font-size: 15px; color: var(--text-mid); max-width: 40ch; margin: 0 auto 24px; line-height: 1.7; }
+  .success-quote-box {
+    background: var(--steel); border-radius: var(--r);
+    padding: 20px 24px; margin: 0 auto; max-width: 380px;
+    text-align: left; margin-bottom: 28px;
+  }
+  .sqb-label { font-size: 11px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .sqb-line { font-size: 13px; color: var(--text-mid); padding: 3px 0; }
+  .sqb-total { font-size: 18px; font-weight: 700; color: var(--cobalt); margin-top: 8px; }
+
+  /* ── FAQ ── */
+  .faq-section { background: var(--steel); }
+  .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 48px; }
+  .faq-item {
+    background: var(--white); border-radius: var(--r-lg); padding: 24px;
+    border: 1px solid var(--border);
+  }
+  .faq-q { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+  .faq-a { font-size: 14px; color: var(--text-mid); line-height: 1.7; }
+
+  /* ── CONTACT ── */
+  .contact-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+    margin-top: 48px; align-items: start;
+  }
+  .contact-detail { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 28px; }
+  .contact-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--cobalt-light); display: flex; align-items: center;
+    justify-content: center; font-size: 18px; flex-shrink: 0;
+  }
+  .contact-detail-text strong { display: block; font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+  .contact-detail-text span { font-size: 14px; color: var(--text-mid); }
+  .contact-form-card {
+    background: var(--steel); border-radius: var(--r-lg);
+    padding: 32px; border: 1px solid var(--border);
+  }
+  .contact-form-card h3 { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 20px; }
+
+  /* ── DASHBOARD ── */
+  #dashboard { display: none; }
+  .dashboard-header {
+    background: var(--navy); color: #fff; padding: 80px 24px 32px;
+  }
+  .dashboard-inner { max-width: 1200px; margin: 0 auto; }
+  .dashboard-title { font-family: 'DM Serif Display', serif; font-size: 28px; margin-bottom: 6px; }
+  .dashboard-sub { font-size: 14px; color: rgba(255,255,255,0.5); }
+
+  .stats-row {
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    gap: 16px; margin: 32px 24px 0; max-width: 1200px; margin-left: auto; margin-right: auto;
+    position: relative; z-index: 1;
+  }
+  .stat-card {
+    background: var(--white); border-radius: var(--r-lg);
+    padding: 20px; box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+  }
+  .stat-card-label { font-size: 11px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .stat-card-value { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--text); }
+  .stat-card-value.highlight { color: var(--cobalt); }
+
+  .quotes-table-container { max-width: 1200px; margin: 32px auto; padding: 0 24px; }
+  .table-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px;
+  }
+  .table-title { font-size: 18px; font-weight: 700; color: var(--text); }
+  .filter-tabs { display: flex; gap: 4px; }
+  .filter-tab {
+    padding: 7px 16px; border-radius: 20px; font-size: 13px;
+    font-weight: 500; cursor: pointer; border: none;
+    background: var(--steel); color: var(--text-mid); transition: all 0.15s;
+  }
+  .filter-tab.active { background: var(--cobalt); color: #fff; }
+
+  .quotes-table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
+  .quotes-table thead tr { background: var(--steel); }
+  .quotes-table th { padding: 12px 16px; text-align: left; font-size: 12px; font-weight: 600; color: var(--text-mid); letter-spacing: 0.03em; }
+  .quotes-table td { padding: 14px 16px; font-size: 13px; border-bottom: 1px solid var(--border); }
+  .quotes-table tr:last-child td { border-bottom: none; }
+  .quotes-table tr:hover td { background: var(--steel); }
+  .status-badge {
+    display: inline-block; padding: 4px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .status-new { background: #DBEAFE; color: #1D4ED8; }
+  .status-contacted { background: #FEF3C7; color: #92400E; }
+  .status-scheduled { background: var(--success-light); color: #047857; }
+  .status-completed { background: #F3F4F6; color: #374151; }
+  .status-declined { background: #FEE2E2; color: #991B1B; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--navy); color: rgba(255,255,255,0.5);
+    padding: 48px 24px 32px;
+  }
+  .footer-inner { max-width: 1200px; margin: 0 auto; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 40px; }
+  .footer-brand-desc { font-size: 13px; line-height: 1.7; margin-top: 12px; max-width: 28ch; }
+  .footer-col h4 { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.8); margin-bottom: 16px; }
+  .footer-col a { display: block; font-size: 13px; color: rgba(255,255,255,0.45); text-decoration: none; margin-bottom: 10px; transition: color 0.15s; }
+  .footer-col a:hover { color: rgba(255,255,255,0.8); }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(13,27,42,0.7); backdrop-filter: blur(4px);
+    z-index: 200; display: none; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--white); border-radius: var(--r-lg);
+    width: 100%; max-width: 760px; max-height: 90vh;
+    overflow-y: auto; box-shadow: var(--shadow-lg);
+  }
+  .modal-head {
+    padding: 24px 28px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .modal-head h3 { font-size: 18px; font-weight: 700; color: var(--text); }
+  .modal-close {
+    width: 32px; height: 32px; border-radius: 50%; background: var(--steel);
+    border: none; cursor: pointer; font-size: 18px; color: var(--text-mid);
+    display: flex; align-items: center; justify-content: center; transition: 0.15s;
+  }
+  .modal-close:hover { background: var(--border); }
+  .modal-body { padding: 28px; }
+  .modal-detail-row {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 24px;
+  }
+  .md-item label { font-size: 11px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 4px; }
+  .md-item span { font-size: 14px; color: var(--text); font-weight: 500; }
+  .price-breakdown { background: var(--navy); border-radius: var(--r); padding: 20px 24px; margin-bottom: 24px; }
+  .pb-line { display: flex; justify-content: space-between; font-size: 13px; padding: 6px 0; }
+  .pb-line:last-child { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; margin-top: 6px; }
+  .pb-label { color: rgba(255,255,255,0.55); }
+  .pb-value { color: var(--white); font-weight: 600; }
+  .pb-total { color: var(--amber); font-size: 16px; }
+  .notes-area {
+    width: 100%; padding: 12px 14px; border: 1.5px solid var(--border);
+    border-radius: var(--r); font-size: 14px; font-family: inherit;
+    resize: vertical; min-height: 80px; color: var(--text); outline: none;
+  }
+  .notes-area:focus { border-color: var(--cobalt); }
+  .status-select {
+    padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--r);
+    font-size: 13px; font-family: inherit; color: var(--text); background: var(--white); outline: none;
+  }
+  .status-select:focus { border-color: var(--cobalt); }
+  .modal-actions { display: flex; gap: 12px; margin-top: 24px; }
+  .btn-save {
+    flex: 1; padding: 12px; border-radius: var(--r); background: var(--cobalt);
+    color: #fff; border: none; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  .btn-save:hover { background: var(--cobalt-hover); }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 300;
+    background: var(--text); color: #fff; padding: 14px 20px;
+    border-radius: var(--r); font-size: 14px; font-weight: 500;
+    box-shadow: var(--shadow-lg); transform: translateY(80px); opacity: 0;
+    transition: all 0.3s; pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* ── MOBILE NAV ── */
+  .mobile-nav {
+    display: none; position: fixed; inset: 0; background: var(--navy);
+    z-index: 99; padding: 80px 24px 40px; flex-direction: column;
+  }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a {
+    color: rgba(255,255,255,0.7); text-decoration: none;
+    font-size: 22px; font-weight: 600; padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08); transition: color 0.15s;
+  }
+  .mobile-nav a:hover { color: #fff; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+    .hero-calculator { display: none; }
+    .how-grid { grid-template-columns: 1fr; }
+    .calc-container { grid-template-columns: 1fr; }
+    .quote-sidebar { position: static; }
+    .contact-grid { grid-template-columns: 1fr; gap: 32px; }
+    .faq-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .stats-row { grid-template-columns: repeat(3, 1fr); }
+    .modal-detail-row { grid-template-columns: 1fr 1fr; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; flex-direction: column; }
+    .option-grid { grid-template-columns: 1fr; }
+    .extras-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 580px) {
+    .section { padding: 60px 20px; }
+    .services-grid { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+  }
+.nav-links a[onclick*="openOwnerLogin"]{display:none}.mobile-nav a[onclick*="openOwnerLogin"]{display:none}@media(max-width:700px){#serviceSettings{grid-template-columns:1fr!important}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#home" class="logo">
+      <div class="logo-mark">SR</div>
+      <span class="logo-text">Shine<span>Right</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#calculator">Get a Quote</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#" onclick="openOwnerLogin(); return false;" style="color:rgba(255,255,255,0.45);">Owner Login</a></li>
+      <li><a href="#calculator" class="nav-cta">Get Instant Quote</a></li>
+    </ul>
+    <button class="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="#home" onclick="toggleMobileNav()">Home</a>
+  <a href="#services" onclick="toggleMobileNav()">Services</a>
+  <a href="#how" onclick="toggleMobileNav()">How It Works</a>
+  <a href="#calculator" onclick="toggleMobileNav()">Get a Quote</a>
+  <a href="#contact" onclick="toggleMobileNav()">Contact</a>
+  <a href="#" onclick="toggleMobileNav();setTimeout(openOwnerLogin,200); return false;">Owner Login</a>
+</div>
+
+<!-- MAIN SITE -->
+<div id="mainSite">
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-badge">Serving Austin &amp; Surrounding Areas</div>
+      <h1>Get Your<br>Price in <em>Seconds</em>,<br>Not Days</h1>
+      <p>No phone tags, no waiting on a callback. Choose your ShineRight package, customize every option, and see your exact price — right now.</p>
+      <div class="hero-actions">
+        <a href="#calculator" class="btn-primary">&#9776; Build My Quote</a>
+        <a href="#services" class="btn-outline">View Services</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item"><span class="stat-num">2,400+</span><span class="stat-label">Happy customers</span></div>
+        <div class="stat-item"><span class="stat-num">4.9★</span><span class="stat-label">Average rating</span></div>
+        <div class="stat-item"><span class="stat-num">60 sec</span><span class="stat-label">To get your quote</span></div>
+      </div>
+    </div>
+    <div>
+      <!-- Mini calculator preview -->
+      <div class="hero-calculator">
+        <div class="calc-header">
+          <div class="calc-dots"><span></span><span></span><span></span></div>
+          <div class="calc-title">Instant Quote Calculator</div>
+        </div>
+        <div class="calc-body">
+          <div class="calc-step-label">Select your service</div>
+          <div class="calc-services">
+            <div class="calc-service-card selected" onclick="previewSelect(this, 99)">
+              <div class="s-name">Express Wash</div>
+              <div class="s-price">From $99</div>
+              <div class="s-check">✓</div>
+            </div>
+            <div class="calc-service-card" onclick="previewSelect(this, 175)">
+              <div class="s-name">Full Detail</div>
+              <div class="s-price">From $175</div>
+              <div class="s-check">✓</div>
+            </div>
+            <div class="calc-service-card" onclick="previewSelect(this, 249)">
+              <div class="s-name">Premium Detail</div>
+              <div class="s-price">From $249</div>
+              <div class="s-check">✓</div>
+            </div>
+            <div class="calc-service-card" onclick="previewSelect(this, 389)">
+              <div class="s-name">Show Car</div>
+              <div class="s-price">From $389</div>
+              <div class="s-check">✓</div>
+            </div>
+          </div>
+          <div class="price-display">
+            <div><div class="price-label">Estimated total</div></div>
+            <div class="price-amount" id="heroPrice"><span>$</span><span id="heroPriceNum">99</span></div>
+          </div>
+          <a href="#calculator" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;padding:13px;border-radius:10px;background:var(--cobalt);color:#fff;font-size:14px;font-weight:600;text-decoration:none;transition:background 0.15s;" onmouseover="this.style.background='#1550C8'" onmouseout="this.style.background='var(--cobalt)'">Customize My Quote →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="section-inner">
+    <div class="section-label">Process</div>
+    <h2 class="section-heading">Three steps to your quote</h2>
+    <p class="section-sub">Most customers complete the calculator in under two minutes and receive an accurate estimate without any back-and-forth.</p>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-number">1</div>
+        <div class="how-title">Choose Your Service</div>
+        <div class="how-desc">Select from our carefully designed packages — from a quick express wash to a full show-car preparation with paint correction.</div>
+        <a href="#services" style="display:inline-block;margin-top:20px;font-size:13px;font-weight:600;color:var(--cobalt);text-decoration:none;">View packages →</a>
+      </div>
+      <div class="how-card">
+        <div class="how-number">2</div>
+        <div class="how-title">Customize the Details</div>
+        <div class="how-desc">Tell us your vehicle size, its current condition, and which areas matter most to you. Every selection updates the price in real time.</div>
+        <a href="#calculator" style="display:inline-block;margin-top:20px;font-size:13px;font-weight:600;color:var(--cobalt);text-decoration:none;">Open calculator →</a>
+      </div>
+      <div class="how-card">
+        <div class="how-number">3</div>
+        <div class="how-title">Submit Your Request</div>
+        <div class="how-desc">Enter your contact details, preferred date, and address. We'll confirm your appointment within one business hour.</div>
+        <a href="#contact" style="display:inline-block;margin-top:20px;font-size:13px;font-weight:600;color:var(--cobalt);text-decoration:none;">Contact us →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section services-section" id="services">
+  <div class="section-inner">
+    <div class="section-label">Packages</div>
+    <h2 class="section-heading">What's included in each service</h2>
+    <p class="section-sub">Every package is priced transparently. Pick the one that fits your vehicle and budget, then add extras from the calculator.</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">🚿</div>
+        <div class="service-name">Express Wash &amp; Shine</div>
+        <div class="service-desc">A thorough exterior wash, dry, and tire dressing. Perfect for maintaining a vehicle that's already in good shape.</div>
+        <div class="service-meta">
+          <div class="service-price">$99 <small>starting price</small></div>
+          <div class="service-duration">⏱ 45–75 min</div>
+        </div>
+        <ul class="service-features">
+          <li>Hand wash &amp; rinse</li>
+          <li>Wheel cleaning</li>
+          <li>Tire dressing</li>
+          <li>Windows exterior</li>
+          <li>Quick vacuum</li>
+        </ul>
+        <button class="btn-service" onclick="startQuote(0)">Get a Quote</button>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">✨</div>
+        <div class="service-name">Full Detail</div>
+        <div class="service-desc">Interior and exterior detail covering every surface. This is our most popular service for weekly-driver vehicles.</div>
+        <div class="service-meta">
+          <div class="service-price">$175 <small>starting price</small></div>
+          <div class="service-duration">⏱ 2–3 hrs</div>
+        </div>
+        <ul class="service-features">
+          <li>Everything in Express</li>
+          <li>Full interior vacuum</li>
+          <li>Dashboard &amp; console wipe</li>
+          <li>Leather conditioning</li>
+          <li>Window detail inside &amp; out</li>
+        </ul>
+        <button class="btn-service" onclick="startQuote(1)">Get a Quote</button>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">💎</div>
+        <div class="service-name">Premium Detail</div>
+        <div class="service-desc">Deep-clean treatment with clay bar decontamination, light paint enhancement, and protective wax or sealant.</div>
+        <div class="service-meta">
+          <div class="service-price">$249 <small>starting price</small></div>
+          <div class="service-duration">⏱ 4–5 hrs</div>
+        </div>
+        <ul class="service-features">
+          <li>Everything in Full Detail</li>
+          <li>Clay bar decontamination</li>
+          <li>Paint enhancement wipe</li>
+          <li>Carnauba wax application</li>
+          <li>Engine bay wipe-down</li>
+        </ul>
+        <button class="btn-service" onclick="startQuote(2)">Get a Quote</button>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🏆</div>
+        <div class="service-name">Show Car Prep</div>
+        <div class="service-desc">Full paint correction, ceramic coating, and hand-finished detail to bring out your vehicle's absolute best condition.</div>
+        <div class="service-meta">
+          <div class="service-price">$389 <small>starting price</small></div>
+          <div class="service-duration">⏱ 6–8 hrs</div>
+        </div>
+        <ul class="service-features">
+          <li>Everything in Premium</li>
+          <li>Two-stage paint correction</li>
+          <li>Ceramic coating option</li>
+          <li>Headlight restoration</li>
+          <li>Complete detailing report</li>
+        </ul>
+        <button class="btn-service" onclick="startQuote(3)">Get a Quote</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALCULATOR -->
+<section class="section calculator-section" id="calculator">
+  <div class="section-inner">
+    <div class="section-label">Quote Calculator</div>
+    <h2 class="section-heading">Build your custom quote</h2>
+    <p class="section-sub">Every price updates the moment you make a selection. No surprises.</p>
+
+    <div class="calc-container">
+      <!-- LEFT: WIZARD -->
+      <div>
+        <div class="calc-steps-nav">
+          <button class="calc-step-btn active" id="navBtn0" onclick="goToStep(0)">1 · Service</button>
+          <button class="calc-step-btn" id="navBtn1" onclick="goToStep(1)">2 · Vehicle</button>
+          <button class="calc-step-btn" id="navBtn2" onclick="goToStep(2)">3 · Extras</button>
+          <button class="calc-step-btn" id="navBtn3" onclick="goToStep(3)">4 · Details</button>
+        </div>
+
+        <!-- PANEL 0: SERVICE -->
+        <div class="calc-panel active" id="panel0">
+          <div class="panel-title">Which service are you interested in?</div>
+          <div class="panel-desc">Select the package that best describes what you're looking for. You can add extras in step 3.</div>
+          <div class="option-grid">
+            <div class="option-card selected" id="svc0" onclick="selectService(0,99,45,'Express Wash & Shine')">
+              <div class="oc-label">Express Wash &amp; Shine</div>
+              <div class="oc-desc">Exterior wash, dry, tyres, windows</div>
+              <div class="oc-price">From $99</div>
+            </div>
+            <div class="option-card" id="svc1" onclick="selectService(1,175,120,'Full Detail')">
+              <div class="oc-label">Full Detail</div>
+              <div class="oc-desc">Interior + exterior complete detail</div>
+              <div class="oc-price">From $175</div>
+              <div class="option-badge">Popular</div>
+            </div>
+            <div class="option-card" id="svc2" onclick="selectService(2,249,240,'Premium Detail')">
+              <div class="oc-label">Premium Detail</div>
+              <div class="oc-desc">Clay bar, paint enhancement, wax</div>
+              <div class="oc-price">From $249</div>
+            </div>
+            <div class="option-card" id="svc3" onclick="selectService(3,389,360,'Show Car Prep')">
+              <div class="oc-label">Show Car Prep</div>
+              <div class="oc-desc">Full correction &amp; ceramic coating</div>
+              <div class="oc-price">From $389</div>
+            </div>
+          </div>
+          <div class="nav-buttons">
+            <button class="btn-next" onclick="goToStep(1)">Next: Vehicle →</button>
+          </div>
+        </div>
+
+        <!-- PANEL 1: VEHICLE -->
+        <div class="calc-panel" id="panel1">
+          <div class="panel-title">Tell us about your vehicle</div>
+          <div class="panel-desc">Size affects the time and materials required. Condition helps us give you an accurate estimate.</div>
+          <p style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">Vehicle size</p>
+          <div class="option-grid" style="margin-bottom:28px">
+            <div class="option-card" id="vsz0" onclick="selectVehicleSize(0,0,'Sedan / Coupe')">
+              <div class="oc-label">Sedan / Coupe</div>
+              <div class="oc-desc">Standard 4-door or 2-door car</div>
+              <div class="oc-price">Included</div>
+            </div>
+            <div class="option-card" id="vsz1" onclick="selectVehicleSize(1,30,'Crossover / SUV')">
+              <div class="oc-label">Crossover / SUV</div>
+              <div class="oc-desc">Compact to mid-size SUV</div>
+              <div class="oc-price">+$30</div>
+            </div>
+            <div class="option-card" id="vsz2" onclick="selectVehicleSize(2,55,'Full-Size SUV / Truck')">
+              <div class="oc-label">Full-Size SUV / Truck</div>
+              <div class="oc-desc">Large SUV, pickup, minivan</div>
+              <div class="oc-price">+$55</div>
+            </div>
+            <div class="option-card" id="vsz3" onclick="selectVehicleSize(3,90,'Sprinter / XL')">
+              <div class="oc-label">Sprinter / XL</div>
+              <div class="oc-desc">Large vans, sprinters, RVs</div>
+              <div class="oc-price">+$90</div>
+            </div>
+          </div>
+          <p style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">Interior condition</p>
+          <div class="option-grid">
+            <div class="option-card" id="cnd0" onclick="selectCondition(0,0,'Clean')">
+              <div class="oc-label">Clean</div>
+              <div class="oc-desc">Light dust, no heavy soiling</div>
+              <div class="oc-price">Included</div>
+            </div>
+            <div class="option-card" id="cnd1" onclick="selectCondition(1,35,'Average')">
+              <div class="oc-label">Average</div>
+              <div class="oc-desc">Some stains, dirt accumulation</div>
+              <div class="oc-price">+$35</div>
+            </div>
+            <div class="option-card" id="cnd2" onclick="selectCondition(2,65,'Heavily Soiled')">
+              <div class="oc-label">Heavily Soiled</div>
+              <div class="oc-desc">Deep stains, heavy buildup</div>
+              <div class="oc-price">+$65</div>
+            </div>
+            <div class="option-card" id="cnd3" onclick="selectCondition(3,110,'Neglected')">
+              <div class="oc-label">Neglected</div>
+              <div class="oc-desc">Long-term buildup, pet mess</div>
+              <div class="oc-price">+$110</div>
+            </div>
+          </div>
+          <div class="nav-buttons">
+            <button class="btn-back" onclick="goToStep(0)">← Back</button>
+            <button class="btn-next" onclick="goToStep(2)">Next: Extras →</button>
+          </div>
+        </div>
+
+        <!-- PANEL 2: EXTRAS -->
+        <div class="calc-panel" id="panel2">
+          <div class="panel-title">Add extra services</div>
+          <div class="panel-desc">Select any add-ons. Selected items are highlighted in blue.</div>
+          <div class="extras-grid">
+            <div class="extra-card" id="ex0" onclick="toggleExtra(0,45,'Pet Hair Removal')">
+              <div class="extra-check" id="exCheck0">✓</div>
+              <div class="extra-body"><div class="eb-label">Pet Hair Removal</div><div class="eb-price">+$45</div></div>
+            </div>
+            <div class="extra-card" id="ex1" onclick="toggleExtra(1,80,'Ceramic Coating')">
+              <div class="extra-check" id="exCheck1">✓</div>
+              <div class="extra-body"><div class="eb-label">Ceramic Coating</div><div class="eb-price">+$80</div></div>
+            </div>
+            <div class="extra-card" id="ex2" onclick="toggleExtra(2,60,'Paint Sealant')">
+              <div class="extra-check" id="exCheck2">✓</div>
+              <div class="extra-body"><div class="eb-label">Paint Sealant</div><div class="eb-price">+$60</div></div>
+            </div>
+            <div class="extra-card" id="ex3" onclick="toggleExtra(3,35,'Headlight Restoration')">
+              <div class="extra-check" id="exCheck3">✓</div>
+              <div class="extra-body"><div class="eb-label">Headlight Restoration</div><div class="eb-price">+$35</div></div>
+            </div>
+            <div class="extra-card" id="ex4" onclick="toggleExtra(4,55,'Engine Bay Cleaning')">
+              <div class="extra-check" id="exCheck4">✓</div>
+              <div class="extra-body"><div class="eb-label">Engine Bay Cleaning</div><div class="eb-price">+$55</div></div>
+            </div>
+            <div class="extra-card" id="ex5" onclick="toggleExtra(5,40,'Odor Elimination')">
+              <div class="extra-check" id="exCheck5">✓</div>
+              <div class="extra-body"><div class="eb-label">Odor Elimination</div><div class="eb-price">+$40</div></div>
+            </div>
+            <div class="extra-card" id="ex6" onclick="toggleExtra(6,30,'Scratch Touch-Up')">
+              <div class="extra-check" id="exCheck6">✓</div>
+              <div class="extra-body"><div class="eb-label">Scratch Touch-Up</div><div class="eb-price">+$30</div></div>
+            </div>
+            <div class="extra-card" id="ex7" onclick="toggleExtra(7,75,'Rush Service (same-day)')">
+              <div class="extra-check" id="exCheck7">✓</div>
+              <div class="extra-body"><div class="eb-label">Rush Service (same-day)</div><div class="eb-price">+$75</div></div>
+            </div>
+          </div>
+          <div class="nav-buttons">
+            <button class="btn-back" onclick="goToStep(1)">← Back</button>
+            <button class="btn-next" onclick="goToStep(3)">Next: Your Details →</button>
+          </div>
+        </div>
+
+        <!-- PANEL 3: CONTACT -->
+        <div class="calc-panel" id="panel3">
+          <div class="panel-title">Where should we send the confirmation?</div>
+          <div class="panel-desc">Review your selections on the right, then submit your request. No commitment required.</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Full name</label>
+              <input class="form-input" type="text" id="fName" placeholder="Alex Johnson">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone number</label>
+              <input class="form-input" type="tel" id="fPhone" placeholder="(512) 555-0182">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email address</label>
+            <input class="form-input" type="email" id="fEmail" placeholder="alex@email.com">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Preferred date</label>
+              <input class="form-input" type="date" id="fDate">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Preferred time</label>
+              <select class="form-input" id="fTime">
+                <option>Morning (8–11 AM)</option>
+                <option>Midday (11 AM–2 PM)</option>
+                <option>Afternoon (2–5 PM)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Service address</label>
+            <input class="form-input" type="text" id="fAddress" placeholder="1204 S Lamar Blvd, Austin, TX 78704">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Additional notes (optional)</label>
+            <textarea class="form-input form-textarea" id="fNotes" placeholder="e.g. 2022 Ford F-150, white, dog hair throughout the interior, parked in a covered garage."></textarea>
+          </div>
+          <div class="nav-buttons">
+            <button class="btn-back" onclick="goToStep(2)">← Back</button>
+            <button class="btn-submit" onclick="submitQuote()">Submit Quote Request →</button>
+          </div>
+        </div>
+
+        <!-- SUCCESS -->
+        <div class="success-screen" id="successScreen">
+          <div class="success-icon">✓</div>
+          <div class="success-title">You're all set!</div>
+          <div class="success-desc">The ShineRight team has your request. We'll call or text you within one business hour to lock in your appointment time.</div>
+          <div class="success-quote-box" id="successBox"></div>
+          <button class="btn-primary" onclick="resetQuote()" style="margin:0 auto;display:flex">Start a new quote</button>
+        </div>
+      </div>
+
+      <!-- RIGHT: SIDEBAR -->
+      <div class="quote-sidebar">
+        <div class="quote-card">
+          <div class="qc-head">
+            <div class="qc-head-label">Estimated Total</div>
+            <div class="qc-total" id="totalDisplay"><span>$</span><span id="totalNum">99</span></div>
+          </div>
+          <div class="qc-body" id="breakdown">
+            <div class="qc-line">
+              <span class="qc-line-label">Base service</span>
+              <span class="qc-line-value" id="bLine">$99</span>
+            </div>
+            <div class="qc-line" id="szRow" style="display:none">
+              <span class="qc-line-label">Vehicle size</span>
+              <span class="qc-line-value positive" id="szLine">—</span>
+            </div>
+            <div class="qc-line" id="cdRow" style="display:none">
+              <span class="qc-line-label">Condition</span>
+              <span class="qc-line-value positive" id="cdLine">—</span>
+            </div>
+            <div id="extraLines"></div>
+          </div>
+          <div class="qc-body" style="padding-top:0">
+            <div class="qc-duration" id="durationDisplay">
+              <span>⏱</span> <span id="durationText">45–75 min estimated</span>
+            </div>
+          </div>
+          <div class="qc-trust">
+            <div class="trust-item">✓ &nbsp;No commitment required</div>
+            <div class="trust-item">✓ &nbsp;Price locked in at submission</div>
+            <div class="trust-item">✓ &nbsp;Confirmed within 1 business hour</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section faq-section" id="faq">
+  <div class="section-inner">
+    <div class="section-label">Questions</div>
+    <h2 class="section-heading">Frequently asked questions</h2>
+    <div class="faq-grid">
+      <div class="faq-item">
+        <div class="faq-q">How accurate is my instant quote?</div>
+        <div class="faq-a">Our calculator reflects the actual prices we charge every day. In the vast majority of appointments, your final invoice matches the quote exactly. If we arrive and find something unexpected — like severe pet hair matting or a stain that needs a specialty product — we'll tell you before we touch the vehicle.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Do I have to book after getting a quote?</div>
+        <div class="faq-a">Not at all. The calculator is there so you can see real pricing without having to call us. No credit card, no commitment. If you'd like to move forward, just submit the form and we'll reach out to confirm.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I change my selections after submitting?</div>
+        <div class="faq-a">Yes, easily. When we call or text to confirm, just tell us what you'd like to change and we'll adjust the quote on the spot. You can also text us at the business phone number any time before your appointment.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What areas do you service?</div>
+        <div class="faq-a">We cover Austin and the immediate surrounding cities: Round Rock, Cedar Park, Pflugerville, Buda, and Kyle. If you're just outside that range, reach out — we handle out-of-area jobs on a case-by-case basis, typically with a small travel fee already reflected in the calculator.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How quickly will I hear back?</div>
+        <div class="faq-a">Within one business hour, Monday through Friday 7:30 AM – 6 PM, and Saturday 8 AM – 4 PM. Requests submitted Sunday or after-hours are answered first thing the next morning — usually before 8 AM.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What payment methods do you accept?</div>
+        <div class="faq-a">Cash, all major credit and debit cards (Visa, Mastercard, Amex, Discover), Apple Pay, Venmo, and Zelle. Payment is collected after the service is complete and you're satisfied — never before.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section" id="contact">
+  <div class="section-inner">
+    <div class="section-label">Contact</div>
+    <h2 class="section-heading">Prefer to talk to the ShineRight team?</h2>
+    <div class="contact-grid">
+      <div>
+        <div class="contact-detail">
+          <div class="contact-icon">📞</div>
+          <div class="contact-detail-text">
+            <strong>Phone</strong>
+            <span>the business phone number</span>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-icon">✉️</div>
+          <div class="contact-detail-text">
+            <strong>Email</strong>
+            <span>the business email address</span>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-icon">📍</div>
+          <div class="contact-detail-text">
+            <strong>Service Area</strong>
+            <span>Austin, Round Rock, Cedar Park, Pflugerville &amp; Buda</span>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-icon">🕐</div>
+          <div class="contact-detail-text">
+            <strong>Hours</strong>
+            <span>Mon–Fri: 7:30 AM – 6 PM · Sat: 8 AM – 4 PM · Sun: Closed</span>
+          </div>
+        </div>
+        <a href="#calculator" class="btn-primary" style="display:inline-flex;margin-top:8px">Build My Quote →</a>
+      </div>
+      <div class="contact-form-card">
+        <h3>Send a message</h3>
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <input class="form-input" type="text" id="cName" placeholder="Alex Johnson">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" id="cEmail" placeholder="alex@email.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message</label>
+          <textarea class="form-input form-textarea" id="cMessage" placeholder="e.g. Do you service lifted trucks? Can I schedule on a Sunday?"></textarea>
+        </div>
+        <button class="btn-primary" style="width:100%;justify-content:center" onclick="submitContactForm()">Send Message</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <a href="#home" class="logo">
+          <div class="logo-mark" style="width:28px;height:28px;font-size:14px">SR</div>
+          <span class="logo-text" style="color:#fff">Shine<span>Right</span></span>
+        </a>
+        <div class="footer-brand-desc">Austin's mobile auto detailing team. Transparent pricing, no surprises, paint-safe products — since 2019.</div>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <a href="#services">Express Wash</a>
+        <a href="#services">Full Detail</a>
+        <a href="#services">Premium Detail</a>
+        <a href="#services">Show Car Prep</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#how">How It Works</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+        <a href="#" onclick="openOwnerLogin(); return false;">Owner Login</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#" onclick="openLegal('privacy');return false;">Privacy Policy</a>
+        <a href="#" onclick="openLegal('terms');return false;">Terms of Service</a>
+        <a href="#" onclick="openLegal('refund');return false;">Refund Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 the business LLC · Austin, TX · the business phone number</span>
+      <span>Licensed &amp; Insured · Serving Austin Since 2019</span>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /mainSite -->
+
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="dashboard-header">
+    <div class="dashboard-inner">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div class="dashboard-title">Business Dashboard</div>
+          <div class="dashboard-sub">the business · Austin, TX · the business email address · the business phone number</div>
+        </div>
+        <button onclick="returnToSite(); return false;" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:10px 18px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500">← Back to Site</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-card-label">Total Requests</div>
+      <div class="stat-card-value">24</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">New</div>
+      <div class="stat-card-value highlight">7</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Scheduled</div>
+      <div class="stat-card-value">5</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Completed</div>
+      <div class="stat-card-value">10</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Avg. Quote</div>
+      <div class="stat-card-value highlight">$231</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Est. Pipeline</div>
+      <div class="stat-card-value">$2.8k</div>
+    </div>
+  </div>
+
+  <div class="quotes-table-container">
+    <div class="table-header">
+      <div class="table-title">Quote Requests</div>
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="filterQuotes('all',this)">All</button>
+        <button class="filter-tab" onclick="filterQuotes('New',this)">New</button>
+        <button class="filter-tab" onclick="filterQuotes('Contacted',this)">Contacted</button>
+        <button class="filter-tab" onclick="filterQuotes('Scheduled',this)">Scheduled</button>
+        <button class="filter-tab" onclick="filterQuotes('Completed',this)">Completed</button>
+      </div>
+    </div>
+    <table class="quotes-table" id="quotesTable">
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Service</th>
+          <th>Vehicle</th>
+          <th>Estimate</th>
+          <th>Requested Date</th>
+          <th>Status</th>
+          <th>Submitted</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="quotesBody"></tbody>
+    </table>
+  </div>
+
+  <div class="quotes-table-container" style="margin-top:20px">
+    <div class="table-header"><div class="table-title">Customer Messages</div></div>
+    <div id="messagesList" style="padding:20px"></div>
+  </div>
+
+  <div class="quotes-table-container" style="margin-top:20px">
+    <div class="table-header"><div><div class="table-title">Business Settings</div><div style="font-size:12px;color:var(--text-light);margin-top:4px">Customize this site for the business using it.</div></div></div>
+    <div style="padding:20px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
+      <div class="form-group"><label class="form-label">Business name</label><input class="form-input" id="setBusinessName"></div>
+      <div class="form-group"><label class="form-label">Service area</label><input class="form-input" id="setServiceArea"></div>
+      <div class="form-group"><label class="form-label">Business email</label><input class="form-input" id="setEmail" type="email"></div>
+      <div class="form-group"><label class="form-label">Business phone</label><input class="form-input" id="setPhone" type="tel"></div>
+      <div class="form-group" style="grid-column:1/-1"><label class="form-label">Service pricing</label><div id="serviceSettings" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px"></div></div>
+      <div class="form-group"><label class="form-label">Owner password</label><input class="form-input" id="setPassword" type="password" placeholder="Change dashboard password"></div>
+      <div class="form-group"><label class="form-label">Currency symbol</label><input class="form-input" id="setCurrency" maxlength="3"></div>
+    </div>
+    <div style="padding:0 20px 20px"><button class="btn-save" onclick="saveSettings()">Save Business Settings</button> <button onclick="resetBusinessData()" style="margin-left:8px;padding:12px 18px;border-radius:var(--r);border:1px solid #ef4444;background:#fff;color:#b91c1c;font-weight:600;cursor:pointer">Clear all quote/message data</button></div>
+  </div>
+
+<div class="modal-overlay" id="ownerLoginModal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-head"><h3>Owner Login</h3><button class="modal-close" onclick="closeOwnerLogin()">✕</button></div>
+    <div class="modal-body">
+      <p style="color:var(--text-mid);line-height:1.6;margin-bottom:18px">This area is for the business owner. Customers do not need an account.</p>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-input" id="ownerPassword" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter') ownerLogin()"></div>
+      <button class="btn-primary" style="width:100%;justify-content:center" onclick="ownerLogin()">Open Dashboard</button>
+      <div style="font-size:11px;color:var(--text-light);margin-top:14px;line-height:1.5">Single-file demo note: this password gate is browser-side. A real deployment should connect authentication and data storage to a server/backend.</div>
+    </div>
+  </div>
+</div>
+
+<!-- LEGAL MODAL -->
+<div class="modal-overlay" id="legalModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="legalTitle">Policy</h3>
+      <button class="modal-close" onclick="closeLegal()">✕</button>
+    </div>
+    <div class="modal-body" id="legalBody" style="line-height:1.8;color:var(--text-mid);font-size:14px;"></div>
+  </div>
+</div>
+
+<!-- QUOTE DETAIL MODAL -->
+<div class="modal-overlay" id="quoteModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">Quote Details</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  'use strict';
+
+  const DEFAULTS = {
+    businessName: 'Your Business Name',
+    serviceArea: 'Your Service Area',
+    email: 'hello@example.com',
+    phone: '(000) 000-0000',
+    password: '1234',
+    currency: '$',
+    services: [
+      {name:'Express Wash & Shine', base:99, duration:45},
+      {name:'Full Detail', base:175, duration:120},
+      {name:'Premium Detail', base:249, duration:240},
+      {name:'Show Car Prep', base:389, duration:360}
+    ]
+  };
+  const VEHICLES = [
+    {cost:0, name:'Sedan / Coupe'},
+    {cost:30, name:'Crossover / SUV'},
+    {cost:55, name:'Full-Size SUV / Truck'},
+    {cost:90, name:'Sprinter / XL'}
+  ];
+  const CONDITIONS = [
+    {cost:0, name:'Clean'},
+    {cost:35, name:'Average'},
+    {cost:65, name:'Heavily Soiled'},
+    {cost:110, name:'Neglected'}
+  ];
+  const EXTRAS = [
+    {cost:45, name:'Pet Hair Removal'},
+    {cost:80, name:'Ceramic Coating'},
+    {cost:60, name:'Paint Sealant'},
+    {cost:35, name:'Headlight Restoration'},
+    {cost:55, name:'Engine Bay Cleaning'},
+    {cost:40, name:'Odor Elimination'},
+    {cost:30, name:'Scratch Touch-Up'},
+    {cost:75, name:'Rush Service (same-day)'}
+  ];
+  const DURATIONS = ['45–75 min','2–3 hrs','4–5 hrs','6–8 hrs'];
+
+  const clone = obj => JSON.parse(JSON.stringify(obj));
+  function load(key, fallback){
+    try {
+      const raw = localStorage.getItem('instantquote_' + key);
+      return raw === null ? clone(fallback) : JSON.parse(raw);
+    } catch { return clone(fallback); }
+  }
+  function save(key, value){
+    try { localStorage.setItem('instantquote_' + key, JSON.stringify(value)); } catch {}
+  }
+  function esc(v){
+    return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function money(n){ return (config.currency || '$') + Number(n || 0).toLocaleString(); }
+
+  let config = load('config', DEFAULTS);
+  config.services = Array.isArray(config.services) && config.services.length === 4 ? config.services : clone(DEFAULTS.services);
+  let quotes = load('quotes', []);
+  let messages = load('messages', []);
+  let currentFilter = 'all';
+  let ownerLoggedIn = false;
+  let currentModalQuoteId = null;
+
+  let state = {
+    step: 0,
+    service: {idx:0, base:Number(config.services[0].base), duration:Number(config.services[0].duration), name:config.services[0].name},
+    vehicleSize: null,
+    condition: null,
+    extras: {},
+    total: Number(config.services[0].base)
+  };
+
+  function el(id){ return document.getElementById(id); }
+  function showToast(msg){
+    const t = el('toast'); if(!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(showToast.timer);
+    showToast.timer = setTimeout(() => t.classList.remove('show'), 3200);
+  }
+
+  function calcTotal(){
+    let total = Number(state.service.base) || 0;
+    if(state.vehicleSize) total += Number(state.vehicleSize.cost) || 0;
+    if(state.condition) total += Number(state.condition.cost) || 0;
+    Object.values(state.extras).forEach(x => total += Number(x.cost) || 0);
+    state.total = total;
+    updateSidebar();
+  }
+
+  function updateSidebar(){
+    const totalNum = el('totalNum'); if(totalNum) totalNum.textContent = Number(state.total).toLocaleString();
+    const bLine = el('bLine'); if(bLine) bLine.textContent = money(state.service.base);
+    const szRow = el('szRow'), szLine = el('szLine');
+    if(state.vehicleSize && state.vehicleSize.cost > 0){ szRow.style.display=''; szLine.textContent = '+' + money(state.vehicleSize.cost); }
+    else if(szRow) szRow.style.display='none';
+    const cdRow = el('cdRow'), cdLine = el('cdLine');
+    if(state.condition && state.condition.cost > 0){ cdRow.style.display=''; cdLine.textContent = '+' + money(state.condition.cost); }
+    else if(cdRow) cdRow.style.display='none';
+    const extraLines = el('extraLines');
+    if(extraLines){
+      extraLines.innerHTML='';
+      Object.values(state.extras).forEach(x => {
+        const d=document.createElement('div'); d.className='qc-line';
+        d.innerHTML='<span class="qc-line-label">'+esc(x.name)+'</span><span class="qc-line-value positive">+'+money(x.cost)+'</span>';
+        extraLines.appendChild(d);
+      });
+    }
+    const durationText = el('durationText');
+    if(durationText) durationText.textContent = (DURATIONS[state.service.idx] || DURATIONS[0]) + ' estimated';
+  }
+
+  function goToStep(n){
+    n = Math.max(0, Math.min(3, Number(n) || 0));
+    document.querySelectorAll('.calc-panel').forEach((p,i)=>p.classList.toggle('active',i===n));
+    document.querySelectorAll('.calc-step-btn').forEach((b,i)=>{
+      b.classList.toggle('active',i===n);
+      b.classList.toggle('done',i<n);
+    });
+    state.step=n;
+    const calc=el('calculator'); if(calc) calc.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  function selectService(idx, base, dur, name){
+    const service = config.services[idx] || DEFAULTS.services[idx] || DEFAULTS.services[0];
+    document.querySelectorAll('[id^="svc"]').forEach(c=>c.classList.remove('selected'));
+    const card=el('svc'+idx); if(card) card.classList.add('selected');
+    state.service={idx:Number(idx),base:Number(service.base ?? base ?? 0),duration:Number(service.duration ?? dur ?? 0),name:service.name ?? name ?? 'Service'};
+    calcTotal();
+  }
+
+  function startQuote(idx){
+    selectService(idx);
+    const calc=el('calculator'); if(calc) calc.scrollIntoView({behavior:'smooth',block:'start'});
+    setTimeout(()=>goToStep(0), 80);
+    return false;
+  }
+
+  function selectVehicleSize(idx, cost, name){
+    document.querySelectorAll('[id^="vsz"]').forEach(c=>c.classList.remove('selected'));
+    const card=el('vsz'+idx); if(card) card.classList.add('selected');
+    const item=VEHICLES[idx] || {cost:Number(cost)||0,name:name||'Vehicle'};
+    state.vehicleSize={cost:Number(item.cost),name:item.name};
+    calcTotal();
+  }
+
+  function selectCondition(idx, cost, name){
+    document.querySelectorAll('[id^="cnd"]').forEach(c=>c.classList.remove('selected'));
+    const card=el('cnd'+idx); if(card) card.classList.add('selected');
+    const item=CONDITIONS[idx] || {cost:Number(cost)||0,name:name||'Condition'};
+    state.condition={cost:Number(item.cost),name:item.name};
+    calcTotal();
+  }
+
+  function toggleExtra(idx, cost, name){
+    const card=el('ex'+idx);
+    if(state.extras[idx]){ delete state.extras[idx]; if(card) card.classList.remove('selected'); }
+    else { const item=EXTRAS[idx] || {cost:Number(cost)||0,name:name||'Extra'}; state.extras[idx]={cost:Number(item.cost),name:item.name}; if(card) card.classList.add('selected'); }
+    calcTotal();
+  }
+
+  function resetQuote(){
+    const s=config.services[0] || DEFAULTS.services[0];
+    state={step:0,service:{idx:0,base:Number(s.base),duration:Number(s.duration),name:s.name},vehicleSize:null,condition:null,extras:{},total:Number(s.base)};
+    const success=el('successScreen'); if(success) success.style.display='none';
+    document.querySelectorAll('[id^="svc"]').forEach(c=>c.classList.remove('selected'));
+    const first=el('svc0'); if(first) first.classList.add('selected');
+    document.querySelectorAll('[id^="vsz"],[id^="cnd"],[id^="ex"]').forEach(c=>c.classList.remove('selected'));
+    ['fName','fPhone','fEmail','fDate','fTime','fNotes','fAddress'].forEach(id=>{const x=el(id);if(x)x.value='';});
+    calcTotal(); goToStep(0);
+  }
+
+  function submitQuote(){
+    const name=(el('fName')?.value||'').trim();
+    const email=(el('fEmail')?.value||'').trim();
+    const phone=(el('fPhone')?.value||'').trim();
+    if(!name){showToast('Please enter your full name.');el('fName')?.focus();return false;}
+    if(!/^\S+@\S+\.\S+$/.test(email)){showToast('Please enter a valid email address.');el('fEmail')?.focus();return false;}
+    if(!phone){showToast('Please enter a phone number so we can confirm.');el('fPhone')?.focus();return false;}
+    const q={
+      id:Date.now(), name,email,phone,
+      service:state.service.name,
+      vehicle:state.vehicleSize?.name || 'Not specified',
+      condition:state.condition?.name || 'Not specified',
+      extras:Object.values(state.extras).map(x=>x.name),
+      estimate:Number(state.total),
+      date:el('fDate')?.value || 'TBD', time:el('fTime')?.value || 'Any time',
+      address:(el('fAddress')?.value||'').trim() || '—',
+      notes:(el('fNotes')?.value||'').trim(), internalNotes:'', status:'New', submitted:new Date().toISOString()
+    };
+    quotes.unshift(q); save('quotes',quotes);
+    const summary = '<div class="sqb-label">Your Quote Summary</div>'+
+      '<div class="sqb-line">📋 '+esc(q.service)+'</div>'+
+      '<div class="sqb-line">🚗 '+esc(q.vehicle)+'</div>'+
+      (q.condition && q.condition!=='Not specified' ? '<div class="sqb-line">🧹 '+esc(q.condition)+' interior</div>' : '')+
+      q.extras.map(x=>'<div class="sqb-line">✚ '+esc(x)+'</div>').join('')+
+      '<div class="sqb-total">Estimated Total: '+money(q.estimate)+'</div>';
+    const sb=el('successBox'); if(sb) sb.innerHTML=summary;
+    document.querySelectorAll('.calc-panel').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.calc-step-btn').forEach(b=>{b.classList.add('done');b.classList.remove('active');});
+    const success=el('successScreen'); if(success) success.style.display='block';
+    showToast('Quote submitted successfully.');
+    return false;
+  }
+
+  function submitContactForm(){
+    const name=(el('cName')?.value||'').trim(), email=(el('cEmail')?.value||'').trim(), message=(el('cMessage')?.value||'').trim();
+    if(!name){showToast('Please enter your name.');el('cName')?.focus();return false;}
+    if(!/^\S+@\S+\.\S+$/.test(email)){showToast('Please enter a valid email address.');el('cEmail')?.focus();return false;}
+    if(!message){showToast('Please enter a message.');el('cMessage')?.focus();return false;}
+    messages.unshift({id:Date.now(),name,email,message,submitted:new Date().toISOString()}); save('messages',messages); renderMessages();
+    ['cName','cEmail','cMessage'].forEach(id=>{const x=el(id);if(x)x.value='';});
+    showToast('Message saved. The business owner can review it in the dashboard.');
+    return false;
+  }
+
+  function previewSelect(target, price){
+    document.querySelectorAll('.calc-service-card').forEach(c=>c.classList.remove('selected'));
+    if(target) target.classList.add('selected');
+    const idx=[...document.querySelectorAll('.calc-service-card')].indexOf(target);
+    const serviceIdx=idx>=0?idx:0;
+    const p=el('heroPriceNum'); if(p) p.textContent=Number(config.services[serviceIdx]?.base ?? price ?? 0).toLocaleString();
+    setTimeout(()=>startQuote(serviceIdx), 120);
+  }
+
+  function applyBusinessDetails(){
+    document.title=config.businessName+' — Instant Online Quotes';
+    document.querySelectorAll('nav .logo, .footer-brand').forEach(x=>{x.textContent=config.businessName;});
+    document.querySelectorAll('.dashboard-sub').forEach(x=>x.textContent=config.businessName+' · '+config.serviceArea+' · '+config.email+' · '+config.phone);
+    document.querySelectorAll('a[href^="mailto:"]').forEach(a=>{a.href='mailto:'+config.email;a.textContent=config.email;});
+    document.querySelectorAll('a[href^="tel:"]').forEach(a=>{a.href='tel:'+config.phone.replace(/\D/g,'');a.textContent=config.phone;});
+    const area=[...document.querySelectorAll('body *')].find(x=>x.children.length===0 && x.textContent.includes("Austin's mobile auto detailing team"));
+    if(area) area.textContent='InstantQuote helps service businesses turn website visitors into clear quote requests.';
+    const businessName=el('dashboardBusinessName'); if(businessName) businessName.textContent=config.businessName;
+  }
+
+  function updateCustomerServiceCards(){
+    document.querySelectorAll('[id^="svc"]').forEach((card,i)=>{
+      const svc=config.services[i]; if(!svc) return;
+      const price=[...card.querySelectorAll('*')].find(x=>/^\$\d/.test((x.textContent||'').trim()));
+      if(price) price.textContent=money(svc.base);
+    });
+    const hero=el('heroPriceNum'); if(hero) hero.textContent=Number(config.services[0].base).toLocaleString();
+  }
+
+  function openOwnerLogin(){
+    const modal=el('ownerLoginModal'); if(!modal) return false;
+    modal.classList.add('open');
+    const input=el('ownerPassword'); if(input){input.value='';setTimeout(()=>input.focus(),50);}
+    return false;
+  }
+  function closeOwnerLogin(){const m=el('ownerLoginModal');if(m)m.classList.remove('open');}
+  function ownerLogin(){
+    const entered=el('ownerPassword')?.value || '';
+    if(entered !== String(config.password || DEFAULTS.password)){showToast('Incorrect password.');el('ownerPassword')?.focus();return false;}
+    ownerLoggedIn=true; closeOwnerLogin();
+    const db=el('dashboard'), ms=el('mainSite'); if(db)db.style.display='block';if(ms)ms.style.display='none';
+    loadSettings(); updateDashboardStats(); currentFilter='all'; renderTable('all');
+    document.querySelectorAll('.filter-tab').forEach((b,i)=>b.classList.toggle('active',i===0));
+    window.scrollTo(0,0); return false;
+  }
+  function returnToSite(){
+    ownerLoggedIn=false;
+    if(el('dashboard'))el('dashboard').style.display='none';
+    if(el('mainSite'))el('mainSite').style.display='block';
+    window.scrollTo(0,0); return false;
+  }
+  function toggleDashboard(){ return ownerLoggedIn ? returnToSite() : openOwnerLogin(); }
+
+  function loadSettings(){
+    const fields={businessName:'setBusinessName',serviceArea:'setServiceArea',email:'setEmail',phone:'setPhone',currency:'setCurrency'};
+    Object.entries(fields).forEach(([k,id])=>{const x=el(id);if(x)x.value=config[k]||'';});
+    const pw=el('setPassword');if(pw)pw.value='';
+    const box=el('serviceSettings');
+    if(box) box.innerHTML=config.services.map((s,i)=>'<div><label style="font-size:12px;color:var(--text-mid)">'+esc(s.name)+'</label><input class="form-input" id="setSvc'+i+'" type="number" min="0" step="1" value="'+Number(s.base)+'"></div>').join('');
+  }
+  function saveSettings(){
+    config.businessName=(el('setBusinessName')?.value||'').trim()||DEFAULTS.businessName;
+    config.serviceArea=(el('setServiceArea')?.value||'').trim()||DEFAULTS.serviceArea;
+    config.email=(el('setEmail')?.value||'').trim()||DEFAULTS.email;
+    config.phone=(el('setPhone')?.value||'').trim()||DEFAULTS.phone;
+    config.currency=(el('setCurrency')?.value||'').trim()||'$';
+    const pw=(el('setPassword')?.value||'').trim(); if(pw)config.password=pw;
+    config.services.forEach((s,i)=>{const x=el('setSvc'+i);if(x)s.base=Math.max(0,Number(x.value)||0);});
+    save('config',config); state.service.base=config.services[state.service.idx]?.base ?? state.service.base; calcTotal(); applyBusinessDetails(); updateCustomerServiceCards();
+    showToast('Business settings saved.');
+  }
+  function resetBusinessData(){
+    if(!confirm('Delete all saved quotes and messages from this browser?')) return false;
+    quotes=[];messages=[];save('quotes',quotes);save('messages',messages);updateDashboardStats();renderTable(currentFilter);renderMessages();showToast('All quote and message data was cleared.');return false;
+  }
+
+  function statusClass(s){return ({New:'status-new',Contacted:'status-contacted',Scheduled:'status-scheduled',Completed:'status-completed',Declined:'status-declined'})[s]||'';}
+  function updateDashboardStats(){
+    const total=quotes.length, newCount=quotes.filter(q=>q.status==='New').length, scheduled=quotes.filter(q=>q.status==='Scheduled').length, completed=quotes.filter(q=>q.status==='Completed').length;
+    const active=quotes.filter(q=>!['Completed','Declined'].includes(q.status)), pipeline=active.reduce((sum,q)=>sum+Number(q.estimate||0),0), avg=total?Math.round(quotes.reduce((sum,q)=>sum+Number(q.estimate||0),0)/total):0;
+    const cells=document.querySelectorAll('.stat-card-value'); [total,newCount,scheduled,completed,money(avg),money(pipeline)].forEach((v,i)=>{if(cells[i])cells[i].textContent=v;});
+    renderMessages();
+  }
+  function renderTable(filter='all'){
+    const body=el('quotesBody'); if(!body)return;
+    const data=filter==='all'?quotes:quotes.filter(q=>q.status===filter);
+    body.innerHTML = data.length ? data.map(q=>'<tr>'+
+      '<td><div style="font-weight:600;color:var(--text)">'+esc(q.name)+'</div><div style="font-size:12px;color:var(--text-light)">'+esc(q.email)+'</div></td>'+
+      '<td>'+esc(q.service)+'</td><td style="font-size:12px">'+esc(q.vehicle)+'</td><td><strong>'+money(q.estimate)+'</strong></td>'+
+      '<td style="font-size:12px">'+esc(q.date)+'</td><td><span class="status-badge '+statusClass(q.status)+'">'+esc(q.status)+'</span></td>'+
+      '<td style="font-size:12px;color:var(--text-light)">'+new Date(q.submitted).toLocaleDateString()+'</td>'+
+      '<td><button type="button" onclick="openModal('+Number(q.id)+')" style="background:var(--cobalt-light);color:var(--cobalt);border:none;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer">View</button></td></tr>').join(''):
+      '<tr><td colspan="8" style="text-align:center;padding:42px;color:var(--text-light)">No quote requests yet. New requests will appear here automatically.</td></tr>';
+  }
+  function filterQuotes(filter,btn){currentFilter=filter;document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderTable(filter);}
+  function renderMessages(){
+    const box=el('messagesList');if(!box)return;
+    if(!messages.length){box.innerHTML='<div style="color:var(--text-light);font-size:14px">No customer messages yet.</div>';return;}
+    box.innerHTML=messages.map(m=>'<div style="padding:14px 0;border-bottom:1px solid var(--border)"><div style="display:flex;justify-content:space-between;gap:12px"><strong>'+esc(m.name)+'</strong><span style="font-size:12px;color:var(--text-light)">'+new Date(m.submitted).toLocaleString()+'</span></div><div style="font-size:13px;color:var(--text-light);margin:4px 0"><a href="mailto:'+esc(m.email)+'" style="color:var(--cobalt)">'+esc(m.email)+'</a></div><div style="font-size:14px;line-height:1.6">'+esc(m.message)+'</div></div>').join('');
+  }
+  function openModal(id){
+    const q=quotes.find(x=>Number(x.id)===Number(id));if(!q)return false;currentModalQuoteId=q.id;
+    const title=el('modalTitle');if(title)title.textContent='Quote #'+q.id+' — '+q.name;
+    const extras=q.extras?.length?q.extras.map(x=>'<div class="pb-line"><span class="pb-label">'+esc(x)+'</span><span class="pb-value">Included</span></div>').join(''):'<div class="pb-line"><span class="pb-label">No add-ons selected</span><span class="pb-value">—</span></div>';
+    const body=el('modalBody');if(!body)return false;
+    body.innerHTML='<div class="modal-detail-row">'+
+      '<div class="md-item"><label>Customer</label><span>'+esc(q.name)+'</span></div>'+
+      '<div class="md-item"><label>Email</label><span><a href="mailto:'+esc(q.email)+'" style="color:var(--cobalt);text-decoration:none">'+esc(q.email)+'</a></span></div>'+
+      '<div class="md-item"><label>Phone</label><span><a href="tel:'+esc((q.phone||'').replace(/\D/g,''))+'" style="color:var(--cobalt);text-decoration:none">'+esc(q.phone)+'</a></span></div>'+
+      '<div class="md-item"><label>Service Date</label><span>'+esc(q.date)+'</span></div>'+
+      '<div class="md-item"><label>Preferred Time</label><span>'+esc(q.time)+'</span></div>'+
+      '<div class="md-item"><label>Address</label><span>'+esc(q.address)+'</span></div></div>'+
+      '<div class="price-breakdown"><div class="pb-line"><span class="pb-label">Service</span><span class="pb-value">'+esc(q.service)+'</span></div><div class="pb-line"><span class="pb-label">Vehicle</span><span class="pb-value">'+esc(q.vehicle)+'</span></div>'+extras+'<div class="pb-line"><span class="pb-label pb-total">Estimated Total</span><span class="pb-value pb-total">'+money(q.estimate)+'</span></div></div>'+
+      (q.notes?'<div class="form-group"><label class="form-label">Customer Notes</label><div style="font-size:14px;color:var(--text-mid);padding:12px;background:var(--steel);border-radius:8px;line-height:1.6">'+esc(q.notes)+'</div></div>':'')+
+      '<div class="form-group"><label class="form-label">Internal Notes</label><textarea class="notes-area" id="internalNotes" placeholder="Add internal notes visible only to you...">'+esc(q.internalNotes||'')+'</textarea></div>'+
+      '<div class="form-group" style="margin-bottom:0"><label class="form-label">Status</label><select class="status-select" id="statusSelect" style="width:100%">'+['New','Contacted','Scheduled','Completed','Declined'].map(s=>'<option'+(s===q.status?' selected':'')+'>'+s+'</option>').join('')+'</select></div>'+ 
+      '<div class="modal-actions"><button type="button" class="btn-save" onclick="saveQuote('+Number(q.id)+')">Save Changes</button><button type="button" onclick="closeModal()" style="padding:12px 24px;border-radius:var(--r);border:1.5px solid var(--border);background:var(--white);color:var(--text);font-size:14px;font-weight:600;cursor:pointer">Cancel</button></div>';
+    el('quoteModal').classList.add('open');return false;
+  }
+  function saveQuote(id){
+    const q=quotes.find(x=>Number(x.id)===Number(id));if(!q)return false;
+    q.status=el('statusSelect')?.value||q.status;q.internalNotes=el('internalNotes')?.value||'';save('quotes',quotes);closeModal();renderTable(currentFilter);updateDashboardStats();showToast('Quote updated successfully.');return false;
+  }
+  function closeModal(){const m=el('quoteModal');if(m)m.classList.remove('open');currentModalQuoteId=null;}
+
+  function toggleMobileNav(){const nav=el('mobileNav');if(nav)nav.classList.toggle('open');}
+  const legalContent={
+    privacy:{title:'Privacy Policy',body:'<p><strong>Last updated: September 4, 2026</strong></p><p style="margin-top:12px">This website collects information you provide through quote requests and contact forms so the business can respond to you.</p><h4 style="margin:20px 0 8px;color:var(--text)">Information We Collect</h4><p>Name, email, phone number, service address, appointment preferences, and notes you submit through this website.</p><h4 style="margin:20px 0 8px;color:var(--text)">How We Use It</h4><p>The information is used to respond to quote requests, communicate about appointments, and provide requested services.</p>'},
+    terms:{title:'Terms of Service',body:'<p><strong>Last updated: September 4, 2026</strong></p><p style="margin-top:12px">Quotes shown by this calculator are estimates based on the information entered. The business may confirm or adjust a final price before work begins.</p><h4 style="margin:20px 0 8px;color:var(--text)">Appointments</h4><p>Submitting a quote request does not guarantee an appointment. The business must confirm availability and scheduling.</p>'},
+    refund:{title:'Refund Policy',body:'<p><strong>Last updated: September 4, 2026</strong></p><p style="margin-top:12px">Refund and re-service terms are determined by the business operating this website and should be customized before launch.</p>'}
+  };
+  function openLegal(type){const c=legalContent[type];if(!c)return false;if(el('legalTitle'))el('legalTitle').textContent=c.title;if(el('legalBody'))el('legalBody').innerHTML=c.body;if(el('legalModal'))el('legalModal').classList.add('open');return false;}
+  function closeLegal(){const m=el('legalModal');if(m)m.classList.remove('open');}
+
+  // Make all inline handlers available globally.
+  Object.assign(window,{calcTotal,updateSidebar,goToStep,selectService,startQuote,selectVehicleSize,selectCondition,toggleExtra,submitQuote,resetQuote,previewSelect,submitContactForm,openOwnerLogin,closeOwnerLogin,ownerLogin,returnToSite,toggleDashboard,loadSettings,saveSettings,resetBusinessData,filterQuotes,openModal,saveQuote,closeModal,toggleMobileNav,openLegal,closeLegal,showToast,updateDashboardStats,renderTable});
+
+  document.addEventListener('DOMContentLoaded', () => {
+    applyBusinessDetails();
+    loadSettings();
+    updateCustomerServiceCards();
+    resetQuote();
+    renderTable('all');
+    renderMessages();
+
+    el('ownerLoginModal')?.addEventListener('click',e=>{if(e.target.id==='ownerLoginModal')closeOwnerLogin();});
+    el('quoteModal')?.addEventListener('click',e=>{if(e.target.id==='quoteModal')closeModal();});
+    el('legalModal')?.addEventListener('click',e=>{if(e.target.id==='legalModal')closeLegal();});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeOwnerLogin();closeModal();closeLegal();}});
+  });
+})();
+</script>
+
+</body>
+</html>
