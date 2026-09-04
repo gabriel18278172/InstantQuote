@@ -669,7 +669,7 @@
       <li><a href="#how">How It Works</a></li>
       <li><a href="#calculator">Get a Quote</a></li>
       <li><a href="#contact">Contact</a></li>
-      <li><a href="#" onclick="openOwnerLogin(); return false;" style="color:rgba(255,255,255,0.45);">Owner Login</a></li>
+      <li><a href="owner-login.html" style="color:rgba(255,255,255,0.45);">Owner Login</a></li>
       <li><a href="#calculator" class="nav-cta">Get Instant Quote</a></li>
     </ul>
     <button class="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
@@ -685,7 +685,7 @@
   <a href="#how" onclick="toggleMobileNav()">How It Works</a>
   <a href="#calculator" onclick="toggleMobileNav()">Get a Quote</a>
   <a href="#contact" onclick="toggleMobileNav()">Contact</a>
-  <a href="#" onclick="toggleMobileNav();setTimeout(openOwnerLogin,200); return false;">Owner Login</a>
+  <a href="owner-login.html" onclick="toggleMobileNav()">Owner Login</a>
 </div>
 
 <!-- MAIN SITE -->
@@ -1215,7 +1215,7 @@
         <a href="#how">How It Works</a>
         <a href="#faq">FAQ</a>
         <a href="#contact">Contact</a>
-        <a href="#" onclick="openOwnerLogin(); return false;">Owner Login</a>
+        <a href="owner-login.html">Owner Login</a>
       </div>
       <div class="footer-col">
         <h4>Legal</h4>
@@ -1702,7 +1702,7 @@
   }
   function closeModal(){const m=el('quoteModal');if(m)m.classList.remove('open');currentModalQuoteId=null;}
 
-  function toggleMobileNav(){const nav=el('mobileNav');if(nav)nav.classList.toggle('open');}
+  function toggleMobileNav(force){const nav=el('mobileNav');if(!nav)return;if(typeof force==='boolean')nav.classList.toggle('open',force);else nav.classList.toggle('open');}
   const legalContent={
     privacy:{title:'Privacy Policy',body:'<p><strong>Last updated: September 4, 2026</strong></p><p style="margin-top:12px">This website collects information you provide through quote requests and contact forms so the business can respond to you.</p><h4 style="margin:20px 0 8px;color:var(--text)">Information We Collect</h4><p>Name, email, phone number, service address, appointment preferences, and notes you submit through this website.</p><h4 style="margin:20px 0 8px;color:var(--text)">How We Use It</h4><p>The information is used to respond to quote requests, communicate about appointments, and provide requested services.</p>'},
     terms:{title:'Terms of Service',body:'<p><strong>Last updated: September 4, 2026</strong></p><p style="margin-top:12px">Quotes shown by this calculator are estimates based on the information entered. The business may confirm or adjust a final price before work begins.</p><h4 style="margin:20px 0 8px;color:var(--text)">Appointments</h4><p>Submitting a quote request does not guarantee an appointment. The business must confirm availability and scheduling.</p>'},
@@ -1713,6 +1713,36 @@
 
   // Make all inline handlers available globally.
   Object.assign(window,{calcTotal,updateSidebar,goToStep,selectService,startQuote,selectVehicleSize,selectCondition,toggleExtra,submitQuote,resetQuote,previewSelect,submitContactForm,openOwnerLogin,closeOwnerLogin,ownerLogin,returnToSite,toggleDashboard,loadSettings,saveSettings,resetBusinessData,filterQuotes,openModal,saveQuote,closeModal,toggleMobileNav,openLegal,closeLegal,showToast,updateDashboardStats,renderTable});
+
+  // Robust navigation: handle all internal links ourselves so this works
+  // consistently from file://, static hosting, and normal web hosting.
+  function handleInternalNavigation(e){
+    const link=e.target.closest && e.target.closest('a');
+    if(!link) return;
+    const href=link.getAttribute('href');
+    if(!href || !href.startsWith('#')) return;
+
+    // Owner Login is an action, not a real hash destination.
+    if(link.textContent.trim().toLowerCase().includes('owner login')){
+      e.preventDefault();
+      if(typeof toggleMobileNav==='function') toggleMobileNav(false);
+      openOwnerLogin();
+      return;
+    }
+
+    const id=href.slice(1);
+    if(!id) return;
+    const target=document.getElementById(id);
+    if(!target) return;
+    e.preventDefault();
+    if(typeof toggleMobileNav==='function') toggleMobileNav(false);
+    target.scrollIntoView({behavior:'smooth',block:'start'});
+    history.replaceState(null,'','#'+id);
+  }
+
+  // Use capture so navigation still works even if an older inline handler
+  // on a link is present.
+  document.addEventListener('click', handleInternalNavigation, true);
 
   document.addEventListener('DOMContentLoaded', () => {
     applyBusinessDetails();
